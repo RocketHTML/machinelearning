@@ -1,0 +1,12 @@
+Intro to Machine Learning: https://www.youtube.com/watch?v=h0e2HAPTGF4
+
+
+Linear Regression:
+"This was the idea of I have some experimental data, and regression was giving us a way to deduce a model to fit that data. In some cases it's easy, for example when we know it's going to be a linear model we can find the best line to fit that data, and in other cases we can actually use validation to help us explore and find the best model that would fit it: rather it's a linear, a quadratic, a cubic, or some higher order thing."
+<show a linear and quadratic data relationship>
+
+Related topics
+"Machine learning is a huge topic within itself, not including the various subjects in which learning plays a central part: natural language processing, computational biology, computer vision, robotics, all rely today heavily on machine learning and you'll see it in those subjects."
+
+Basics
+"So we're not going to compress several sbujects into one article, but instead we're going to explore the basics."
