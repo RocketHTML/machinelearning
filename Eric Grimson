@@ -33,7 +33,12 @@ I know you're not convinced there's such a thing as normal programming, but if y
 But in a machine learning approach, the idea is that I'm going to give the computer output, I'm going to give it examples of what I want the program to do: labels on data, characterizations on different classes of things. And what I want the computer to do, is given that characterization of output and data, I want that machine learning algorithm to actually produce a program for me. A program that I can then use to infer new information about things. And that creates, if you like, a really nice loop, where I can have the machine learning algorithm learn the program which I can then use to solve some other problem. 
 <swerve data output pic> 9:30
 
+***********************************
+Definition
+***********************************
 And that would be really great if we could do it. And that curve fitting algorithm is a simple version of that; it learns a model for the data, which I can then use to label any other instances of the data, or predict what I would see in terms of spring displacement as I change the masses. So that's the kind of idea we're going to explore.
+***********************************
+
 
 How do you learn?
 So if we want to learn things then we could also ask: How do you learn? And how should a computer learn? For you as a human, there are a couple of possibilities. The first is the boring one, the old style way, memorize facts. Memorize as many facts as you can and then hope that on the exam we ask you instances of those facts, as opposed to some other facts that you haven't memorized. This is an example of Declaritive Knowledge, memorize as much as you can, have wikipedia in your backpocket. Better way to learn is to be able to infer, to be able to deduce new information from old. And if you think about this, this gets closer to Imparitive Knowledge, ways to deduce new things. 
@@ -46,12 +51,87 @@ So the idea then, the basic paradigm, is that we're going to give the system som
 But that's a very simple kind of learning setting. The more common one is: say I give you a set of examples, and those examples have some data associated with them, some features. And the examples have some labels, so for each example I might say 'this is a particular kind of thing, this other one is another kind of thing', and what I want to do is figure out how to do inference on labels of things. So it's not just what's the displacement of the masses, each point in the mass also has a label or a catagory it belongs to. 
 
 13:15
-Let's go through an example with some football players. 
+Let's go through an example with some football players. So let's say you have several examples of football players, the label is the position they play, and the data could be lots of things but we'll use height and weight. So what we want to do is then see if we can come up with a way of characterizing the implicit pattern of how does weight and height predict the kind of position this player could play, and then we'll come up with an algorithm to predict the position of new players. We'll do the draft for next year, where do we want them to play. That's the paradigm: a set of observations, potentially labeled, potentially not, think about how do we do inference to find a model, and then how do we use that model to make predictions. We're gonna see that learning can be done in one of two very broad ways: supervised learning and unsupervised learning.
+
+Supervised Learning:
+So in this case, for every example in the training data, I have a label on it, I know what kind of thing it is. And the question I'm asking is how do I find a rule that would predict the label associated with unseen input, based on those examples. It's supervised because I know what the labeling is.
+
+Unsupervised Learning:
+In this case, we're just given a bunch of examples, but we don't know the labels associated with them. We're just going to try to find the natural ways to group those examples together into different models. In some cases I may know how many models are there, and in other cases I may just wanna say what's the best grouping I can find.
+
+So back to the football example. Here are some data points about recent Patriots players. And I've got two kinds of positions: Recievers and Linemen. And each position is just labeled by the name, the height in inches, and weight in pounds, 5 of each. <img of text>
+
+If I plot those on a 2D plot, unlabeled first, this is what I get: <unlabeled>
+
+What am I trying to do? I'm trying to learn, are there characteristics that distinguish the two classes from one another? And in the unlabeled case, all I have is a set of examples. So what I want to do is decide what makes two players similar, with the goal of seeing can I separate this distribution into two or more natural groups. Similar is a distance measure, says how do I take two examples with values or features associated with them and say how far apart are they.
+
+In the unlabeled case, the simple way to do it is to say, if I know there are at least K groups there, in this case we're gonna say there are 2 different groups there, how could I decide how best to cluster things together so that all the examples in one group are close to each other, all the examples in the other group are close to each other, and the two groups are reasonably far apart. There are many ways to do it, I'm going to show you one, it's a very standard way, and it works basically as follows:
+
+Unlabeled Clustering Algorithm
+If all I know is that there are two groups there, I'm going to start by just picking two examples as my exemplars. Pick them at random (actually random's not great, we don't want to pick them close to each other, so we can just pick two that are far apart to be the examplars). Now for all the other examples in the training data, we ask, which one is the exemplar closest to? We're going to try to create clusters with the property that the distances between all of the examples in that cluster are small, the average distance is small. And see if I can find clusters that gets the average distances of both clusters as small as possible. 
+
+This algorithm works by picking two examples, clustering all examples by saying put it in the group to which it's closest. Once I've got those clusters, I'm going to find the median element of that group, not mean but median, what's the two examples closest to the centers of the clusters, and then treat those as my exemplars, and repeat the process. And I'll either repeat this some number of times, or just until I don't get any change in the process. So it's clustering based on distance, and we'll come back to distance in a second.
+
+So back to the example on football players. If I just did this based on weight, here's the natural dividing line: <clusteronweight>
+
+If I were to do it based on height, it's not as clean. Here's what the algorithm might decide the best dividing line is based on height:
+<clusteronheight>
+
+But now if I use both height and weight, I get something like this:
+<clusteronboth>
+Which is actually kind of nice. Those three are near each other, and those seven are near each other, just in terms of distance on the plane. 
+
+There's a nice natural dividing line through the clusters, and that line is the equidistant line between the centers of those two clusters. Meaning any point along this line is the same distance to the center of one group as it is to the other group. 
+<clusteronbothline>
+
+ So for any new example, if it's above the line I would say it gets that label, and if it's below the line then it gets the other label. In a second we'll come back to how do we measure the distances, but the idea here is simple; I want to find grouping near each other and far apart from the other group. 
+
+Labeled Clustering Algorithm
+ Now suppose I actually knew the labels on these players. The red are the recievers and the blue are the linemen. <labeled>
+
+ (Notice the two heavier recievers, Martellus Bennett and Gronkowski, in football known as the tight ends, while the smaller ones are the wide recievers.) 
+
+ Now what I want to do is say, by taking advantage of the labels how would I divide these groups up? Basic idea in this case is say, if I've got labeled groups in this featured space then what I want to do is find a sub-surface. Sub-surface is a fancy word that says what's the best line, if I can find a single line, that separates all of the examples with one label from all the examples of the second label. We'll see that if the examples are well separated then separating them is easy to do and that's great. But in some cases it's going to be more complicated, because some of the examples will be very close to one another, and that's going to raise the problem of overfitting (creating a really complicated surface to separate things). So we may have to tolerate a few incorrectly labeled things. In any case, as you may have already figured out, with the labeled data the best fitting line looks like this: 
+<labeled line>
+
+Anyone over 280 pounds is going to be a great lineman, anyone under 280 pounds is more likely to be a reciever. 
+
+21:00
+-------------------------------------
+3:40 pm - 4:10pm (30 minutes - no stop)
+
+So we've got two different ways to think about doing this labeling. Now suppose I add in some new data, I want to label new instances. These two data points are actually of a different position, these are running backs, but say all I know about are recievers and linemen. I get these two data points and I'd like to know are they more likely to be recievers or linemen. 
 
 
+Here's the data:
+Now if I plot them, you notice one of the issues. Blue is linemen, red is recievres. black is running backs. Notice the stuck ones. 
 
-Classification methods
-- k nearest neighbor
+Now if I use the unlabeled data, I get a more interesting example. 
+The stuck ones are clearly linemen, but that one there. 
+<pic>
 
-Clustering methods
-- k-means
+
+If I used the labeled data, this one was really easy. Both are definately categorized as recievers. Now you see how you could label things using unlabeled and labeled data. 
+
+We're gonna look at how can we write code to learn that way of separating things out?
+
+- We're going to learn models based on unlabaled data, by simply trying to find ways to cluster things together, and then used the clusters to assign labels to new data
+- We're gonna learn models by looking at labeled data and seeing how do we best come up with a way of separating, with a line, or a plane, or a collection of lines, with examples of one group, from examples of the another group.
+- With the acknowledgement that we want to avoid over fitting, we dont want to make a really complicated system. 
+- And as a consequence we're going to have to make some tradeoffs between what we call false-positives, and false-negatives. But the resulting classifier can then label any new data by just deciding where you are with respect to that separating line.
+
+Here's what you're gonna see:
+
+23:44
+Every machine learning method has five essential components:
+"We need to decide what's the training data and how we're going to evaluate the success of that system. Already seen some examples of that.
+
+We need to decide how are we going to represent each instance that we're giving it. I happened to choose height and weight for football players, but I might have been better off to pick average speed, or idk, arm length or something else. How do I figure out what are the right features?
+
+Associated with that, how do I measure distances between those features. How do I decide what's close and what's not close. Maybe it should be different in terms of weight vs height for example, and I need to make that decision." <24:24>
+https://www.youtube.com/watch?v=h0e2HAPTGF4
+
+
+	- whats the raining data and how will we evaluate suces
+	- how will we represent each instance of data: width height arm length, features
+	- how to measure distance between features: distances between weiight vs height for example
