@@ -11,7 +11,9 @@ Related topics
 "Machine learning is a huge topic within itself, not including the various subjects in which learning plays a central part: natural language processing, computational biology, computer vision, robotics, all rely today heavily on machine learning and you'll see it in those subjects."
 
 Outline
-"So we're not going to compress several sbujects into one article, but instead we're going to start by talking about the basic concepts of machine learning: the idea of having examples, and how do you talk about features representing those examples. How do you measure distances between them, and use the notion of distance as a way to group similar things together, as a way of doing machine learning. And we're gonna look, as a consequence, of two different standard ways of doing learning: Classification methods and Clustering methods. Classification works well when I have what we could call labeled data. I know labels on my examples, and I'm going to use that to try to defind classes that I can learn. Clustering working well when I don't have labeled data. Again we're not going to go into the current really sophisticated machine learning methods, like convolutional learning nets or deep learning, things you read about in the news. But you're going to get a sense of what's behind those by looking at what we do when we talk about learning algorithms."
+"So we're not going to compress several sbujects into one article, but instead we're going to start by talking about the basic concepts of machine learning: the idea of having examples, and how do you talk about features representing those examples. How do you measure distances between them, and use the notion of distance as a way to group similar things together, as a way of doing machine learning. And we're gonna look, as a consequence, of two different standard ways of doing learning: Classification methods and Clustering methods. 
+
+Classification works well when I have what we could call labeled data. I know labels on my examples, and I'm going to use that to try to define classes that I can learn. Clustering working well when I don't have labeled data. Again we're not going to go into the current really sophisticated machine learning methods, like convolutional learning nets or deep learning, things you read about in the news. But you're going to get a sense of what's behind those by looking at what we do when we talk about learning algorithms."
 
 <picture of various public uses of machine learning> 5:20
 
@@ -51,7 +53,8 @@ So the idea then, the basic paradigm, is that we're going to give the system som
 But that's a very simple kind of learning setting. The more common one is: say I give you a set of examples, and those examples have some data associated with them, some features. And the examples have some labels, so for each example I might say 'this is a particular kind of thing, this other one is another kind of thing', and what I want to do is figure out how to do inference on labels of things. So it's not just what's the displacement of the masses, each point in the mass also has a label or a catagory it belongs to. 
 
 13:15
-Let's go through an example with some football players. So let's say you have several examples of football players, the label is the position they play, and the data could be lots of things but we'll use height and weight. So what we want to do is then see if we can come up with a way of characterizing the implicit pattern of how does weight and height predict the kind of position this player could play, and then we'll come up with an algorithm to predict the position of new players. We'll do the draft for next year, where do we want them to play. That's the paradigm: a set of observations, potentially labeled, potentially not, think about how do we do inference to find a model, and then how do we use that model to make predictions. We're gonna see that learning can be done in one of two very broad ways: supervised learning and unsupervised learning.
+Let's go through an example with some football players. So let's say you have several examples of football players, the label is the position they play, and the data could be lots of things but we'll use height and weight. So what we want to do is then see if we can come up with a way of characterizing the implicit pattern of how does weight and height predict the kind of position this player could play, and then we'll come up with an algorithm to predict the position of new players. We'll do the draft for next year, where do we want them to play. 
+That's the paradigm: a set of observations, potentially labeled, potentially not, think about how do we do inference to find a model, and then how do we use that model to make predictions. We're gonna see that learning can be done in one of two very broad ways: supervised learning and unsupervised learning.
 
 Supervised Learning:
 So in this case, for every example in the training data, I have a label on it, I know what kind of thing it is. And the question I'm asking is how do I find a rule that would predict the label associated with unseen input, based on those examples. It's supervised because I know what the labeling is.
@@ -63,7 +66,9 @@ So back to the football example. Here are some data points about recent Patriots
 
 If I plot those on a 2D plot, unlabeled first, this is what I get: <unlabeled>
 
-What am I trying to do? I'm trying to learn, are there characteristics that distinguish the two classes from one another? And in the unlabeled case, all I have is a set of examples. So what I want to do is decide what makes two players similar, with the goal of seeing can I separate this distribution into two or more natural groups. Similar is a distance measure, says how do I take two examples with values or features associated with them and say how far apart are they.
+What am I trying to do? I'm trying to learn, are there characteristics that distinguish the two classes from one another? And in the unlabeled case, all I have is a set of examples. So what I want to do is decide what makes two players similar, with the goal of seeing can I separate this distribution into two or more natural groups. 
+
+Similar is a distance measure, says how do I take two examples with values or features associated with them and say how far apart are they.
 
 In the unlabeled case, the simple way to do it is to say, if I know there are at least K groups there, in this case we're gonna say there are 2 different groups there, how could I decide how best to cluster things together so that all the examples in one group are close to each other, all the examples in the other group are close to each other, and the two groups are reasonably far apart. There are many ways to do it, I'm going to show you one, it's a very standard way, and it works basically as follows:
 
@@ -128,10 +133,120 @@ Every machine learning method has five essential components:
 
 We need to decide how are we going to represent each instance that we're giving it. I happened to choose height and weight for football players, but I might have been better off to pick average speed, or idk, arm length or something else. How do I figure out what are the right features?
 
-Associated with that, how do I measure distances between those features. How do I decide what's close and what's not close. Maybe it should be different in terms of weight vs height for example, and I need to make that decision." <24:24>
-https://www.youtube.com/watch?v=h0e2HAPTGF4
+Associated with that, how do I measure distances between those features. How do I decide what's close and what's not close. Maybe it should be different in terms of weight vs height for example, and I need to make that decision." 
+
+<24:24> https://www.youtube.com/watch?v=h0e2HAPTGF4
+
+Features 24:54
+Whats useful?
+Features dont always capture what you want?
+You as a designer have to decide that.
+	What to measure
+	How to measure
+Learning algorithm to predict final grade
+	What would we measure? 
+		GPA
+		prior programming exp
+		not your zodiac sign
+		not your eye color
+Could throw all features in
+But then it might find a clustering that we don't like.
+Think about how to pick features.
+Maximize signal to noise ratio.
+
+Reptile Example 28:00
+	cobra and rattle fits
+	snake doesnt fit
+		adjust model
+	chicken fits
+	gator doesn't fit
+		adjust
+	dart frog fits model
+	salmon doesnt fit
+	python
+	adust model such that no false negatives - catch all reptitles
+
+	trade off of false positives and false negatives
+		must decide how many to tolerates
+
+	Now we can decide about distance
+		How to decide how to compare
+		How to group them
+		How to separate
+		Relative importance of each feature
+
+	Back to animal example
+		four binary features
+		one nonbinary feature
+
+		we'll make the binary boolean
+		legs will be int
+	distance algorithms
+
+	Minkowski Metric
+		Manhattan Distance
+		Euclidean Distance
+
+	Distance differs on the metric
+	typically use euclidean
+
+	problem, it makes gator and dart frog very close
+	legs too large
+
+Make legs a binary feature
+	better cluster
+
+How you pick features matters
+
+labeled vs unlabeled learning
+	algorithmically 40:52
+	how to measure distance between examples.
+	choice of features.
+	constraints on model complexity
+		specified number of clusters
+		complexity of separating surface
+		want to avoid over fitting problem (each example is its own cluster, or a complex separating surface)
+
+Clustering method 41:31
+	start by defining how many clusters
+	pick examples
+	for every example, put it in the closest cluster
+	medians become new exemplars
+	repeat process until no change
+
+could increase cluster count - 3cluster vs 2- for tighter clustering
+
+Classification approaches
+What to find buondaries in feature space that separate different classes of labeled examples
+	- Look for simple surfaces (e.g. best line or plane) that separates classes
+	- Look for more complex surfaces (subject to constraints) that separate classes
+	- Use voting schemes
+	 - find k nearest examples, use majority vote to select label
+Issues
+	How do we avoid over-fitting to data?
+	How do we measure performance?
+	How do we select best features?
 
 
-	- whats the raining data and how will we evaluate suces
-	- how will we represent each instance of data: width height arm length, features
-	- how to measure distance between features: distances between weiight vs height for example
+political voting data example
+tries simple vertical and simple horizontal models.
+	70% accurate
+count training error.
+	accuracy formula
+come up with sequence of lines
+	80% accurate
+	60% when applied to test data
+
+positive predictive value (ppv)
+	how many true positives do i come with in all of the things I labeled positive
+
+Sensitivity 
+	what percentage did I correctly find
+
+Specificity
+	What percentage did I correctly reject
+
+Tradeoff between sensitivity and specificity. if either is 1, the other is 0.
+
+As we think about machine learning we'll need to think about this trade off and design accordingly
+------------------------------------
